@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mind Map Creator</title>
+    <style>
+        /* General Styles (unchanged) */
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        .dark-mode {
+            background-color: #333;
+            color: #fff;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .flex-col {
+            flex-direction: column;
+        }
+
+        .items-center {
+            align-items: center;
+        }
+
+        .justify-center {
+            justify-content: center;
+        }
+
+        .h-full {
+            height: 100vh;
+        }
+
+        .p-6 {
+            padding: 1.5rem;
+        }
+
+        .bg-gray-100 {
+            background-color: #f7fafc;
+        }
+
+        .dark .bg-gray-100 {
+            background-color: #1a202c;
+        }
+
+        .bg-gray-900 {
+            background-color: #1a202c;
+        }
+
+        .text-gray-900 {
+            color: #1a202c;
+        }
+
+        .dark .text-gray-900 {
+            color: #f7fafc;
+        }
+
+        .text-white {
+            color: #fff;
+        }
+
+        .mb-6 {
+            margin-bottom: 1.5rem;
+        }
+
+        .text-4xl {
+            font-size: 2.25rem;
+        }
+
+        .font-extrabold {
+            font-weight: 800;
+        }
+
+        .space-x-4 > :not([hidden]) ~ :not([hidden]) {
+            --space-x-reverse: 0;
+            margin-right: calc(1rem * var(--space-x-reverse));
+            margin-left: calc(1rem * calc(1 - var(--space-x-reverse)));
+        }
+
+        /* Button Styles (unchanged) */
+        button {
+            transition: background-color 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        button:focus {
+            outline: none;
+        }
+
+        button:focus-visible {
+            box-shadow: 0 0 0 4px rgba(66, 153, 225, 0.6);
+        }
+
+        .rounded-lg {
+            border-radius: 0.5rem;
+        }
+
+        .text-white {
+            color: #fff;
+        }
+
+        .bg-blue-600 {
+            background-color: #3182ce;
+        }
+
+        .bg-blue-700:hover {
+            background-color: #2b6cb0;
+        }
+
+        .bg-green-600 {
+            background-color: #48bb78;
+        }
+
+        .bg-green-700:hover {
+            background-color: #38a169;
+        }
+
+        .bg-red-600 {
+            background-color: #e53e3e;
+        }
+
+        .bg-red-700:hover {
+            background-color: #c53030;
+        }
+
+        .bg-yellow-600 {
+            background-color: #ecc94b;
+        }
+
+        .bg-yellow-700:hover {
+            background-color: #d69e2e;
+        }
+
+        .bg-purple-600 {
+            background-color: #9f7aea;
+        }
+
+        .bg-purple-700:hover {
+            background-color: #805ad5;
+        }
+
+        .bg-indigo-600 {
+            background-color: #5a67d8;
+        }
+
+        .bg-indigo-700:hover {
+            background-color: #4c51bf;
+        }
+
+        .bg-gray-600 {
+            background-color: #718096;
+        }
+
+        .bg-gray-700:hover {
+            background-color: #4a5568;
+        }
+
+        .border {
+            border-width: 1px;
+        }
+
+        .border-gray-300 {
+            border-color: #e2e8f0;
+        }
+
+        .rounded-lg {
+            border-radius: 0.5rem;
+        }
+
+        .bg-white {
+            background-color: #fff;
+        }
+
+        .dark .bg-gray-800 {
+            background-color: #2d3748;
+        }
+
+        .relative {
+            position: relative;
+        }
+
+        .w-full {
+            width: 100%;
+        }
+
+        .h-96 {
+            height: 24rem;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .items-center {
+            align-items: center;
+        }
+
+        .justify-center {
+            justify-content: center;
+        }
+
+        .mt-6 {
+            margin-top: 1.5rem;
+        }
+
+        .inset-0 {
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+
+        .text-gray-500 {
+            color: #a0aec0;
+        }
+
+        .dark .text-gray-400 {
+            color: #cbd5e0;
+        }
+
+        /* Node Styles (unchanged) */
+        .node {
+            width: 100px;
+            height: 50px;
+            background-color: lightblue;
+            border: 1px solid #333;
+            position: absolute;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.2s;
+        }
+
+        .node.selected {
+            background-color: lightgreen;
+        }
+
+        .node:hover {
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        /* SVG Styles (unchanged) */
+        svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Media Queries (unchanged) */
+        @media (max-width: 1200px) {
+            .text-4xl {
+                font-size: 2rem;
+            }
+
+            .p-6 {
+                padding: 1rem;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .text-4xl {
+                font-size: 1.75rem;
+            }
+
+            .p-6 {
+                padding: 0.75rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .text-4xl {
+                font-size: 1.5rem;
+            }
+
+            .p-6 {
+                padding: 0.5rem;
+            }
+
+            .h-96 {
+                height: 20rem;
+            }
+
+            button {
+                padding: 0.5rem 1rem;
+                font-size: 0.875rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .text-4xl {
+                font-size: 1.25rem;
+            }
+
+            .p-6 {
+                padding: 0.25rem;
+            }
+
+            .h-96 {
+                height: 16rem;
+            }
+
+            button {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.75rem;
+            }
+
+            .space-x-4 > :not([hidden]) ~ :not([hidden]) {
+                margin-right: 0.5rem;
+                margin-left: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="flex flex-col items-center justify-center h-full p-6 bg-gray-100 dark:bg-gray-900">
+        <h1 class="mb-6 text-4xl font-extrabold text-gray-900 dark:text-white">Mind Map Creator</h1>
+        <div class="flex space-x-4 mb-6">
+            <button id="newMindMap" class="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800">New Mind Map</button>
+            <button id="saveMindMap" class="px-4 py-2 text-white bg-green-600 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 dark:focus:ring-green-800">Save</button>
+            <button id="deleteMindMap" class="px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-300 dark:focus:ring-red-800">Delete</button>
+        </div>
+        <div class="flex space-x-4 mb-6">
+            <button id="addNode" class="px-4 py-2 text-white bg-yellow-600 rounded-lg hover:bg-yellow-700 focus:outline-none focus:ring-4 focus:ring-yellow-300 dark:focus:ring-yellow-800">Add Node</button>
+            <button id="connectNodes" class="px-4 py-2 text-white bg-purple-600 rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-4 focus:ring-purple-300 dark:focus:ring-purple-800">Connect Nodes</button>
+            <button id="exportMindMap" class="px-4 py-2 text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-300 dark:focus:ring-indigo-800">Export</button>
+        </div>
+        <div class="relative w-full h-96 border border-gray-300 rounded-lg bg-white dark:bg-gray-800" id="mindMapCanvas">
+            <svg id="lines"></svg>
+            <div class="absolute inset-0 flex items-center justify-center">
+                <p class="text-gray-500 dark:text-gray-400">Mind Map Canvas</p>
+            </div>
+        </div>
+        <div class="flex space-x-4 mt-6">
+            <button id="undo" class="px-4 py-2 text-white bg-gray-600 rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-800">Undo</button>
+            <button id="redo" class="px-4 py-2 text-white bg-gray-600 rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-800">Redo</button>
+        </div>
+    </div>
+    
+    <script>
+        let nodes = [];
+        let lines = [];
+        let history = [];
+        let redoStack = [];
+        let selectedNodes = [];
+
+        document.getElementById('newMindMap').addEventListener('click', function() {
+            if (confirm('Are you sure you want to create a new Mind Map?')) {
+                clearMindMap();
+            }
+            alert('New Mind Map created!');
+        });
+
+        document.getElementById('saveMindMap').addEventListener('click', function() {
+            alert('Mind Map saved!');
+        });
+
+        document.getElementById('deleteMindMap').addEventListener('click', function() {
+            if (confirm('Are you sure you want to delete this Mind Map?')) {
+                deleteSelectedNodes();
+                saveHistory();
+            }
+        });
+
+        document.getElementById('addNode').addEventListener('click', function() {
+            const nodeId = 'node-' + (nodes.length + 1);
+            const newNode = createNode(nodeId, 50, 50);
+            document.getElementById('mindMapCanvas').appendChild(newNode);
+            nodes.push(newNode);
+            saveHistory();
+        });
+
+        document.getElementById('connectNodes').addEventListener('click', function() {
+            if (selectedNodes.length < 2) {
+                alert('Select two nodes to connect.');
+                return;
+            }
+            const node1 = selectedNodes[0];
+            const node2 = selectedNodes[1];
+            const line = createLine(node1, node2);
+            document.getElementById('lines').appendChild(line);
+            lines.push(line);
+            selectedNodes.forEach(node => node.classList.remove('selected'));
+            selectedNodes = [];
+            saveHistory();
+        });
+
+        document.getElementById('exportMindMap').addEventListener('click', function() {
+            alert('Mind Map exported!');
+        });
+
+        document.getElementById('undo').addEventListener('click', function() {
+            if (history.length > 0) {
+                const lastState = history.pop();
+                redoStack.push(JSON.stringify(saveState()));
+                restoreState(lastState);
+            }
+        });
+
+        document.getElementById('redo').addEventListener('click', function() {
+            if (redoStack.length > 0) {
+                const nextState = redoStack.pop();
+                history.push(JSON.stringify(saveState()));
+                restoreState(nextState);
+            }
+        });
+
+        function clearMindMap() {
+            nodes.forEach(node => node.remove());
+            nodes = [];
+            lines.forEach(line => line.remove());
+            lines = [];
+            history = [];
+            redoStack = [];
+        }
+
+        function deleteSelectedNodes() {
+            selectedNodes.forEach(node => {
+                const index = nodes.indexOf(node);
+                if (index !== -1) {
+                    nodes.splice(index, 1);
+                }
+                node.remove();
+            });
+
+            lines = lines.filter(line => {
+                const parentNodeIds = selectedNodes.map(node => node.id);
+                const lineNodeIds = [line.getAttribute('data-node1'), line.getAttribute('data-node2')];
+                if (parentNodeIds.includes(lineNodeIds[0]) && parentNodeIds.includes(lineNodeIds[1])) {
+                    return false;
+                }
+                return true;
+            });
+
+            selectedNodes = [];
+        }
+
+        function createNode(id, x, y) {
+            const node = document.createElement('div');
+            node.classList.add('node');
+            node.setAttribute('id', id);
+            node.setAttribute('contenteditable', 'true');
+            node.style.left = x + 'px';
+            node.style.top = y + 'px';
+            node.innerText = id;
+            node.addEventListener('mousedown', startDrag);
+            node.addEventListener('click', selectNode);
+            return node;
+        }
+
+        function createLine(node1, node2) {
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line.setAttribute('x1', node1.offsetLeft + node1.offsetWidth / 2);
+            line.setAttribute('y1', node1.offsetTop + node1.offsetHeight / 2);
+            line.setAttribute('x2', node2.offsetLeft + node2.offsetWidth / 2);
+            line.setAttribute('y2', node2.offsetTop + node2.offsetHeight / 2);
+            line.setAttribute('stroke', 'black');
+            line.setAttribute('stroke-width', '2');
+            line.setAttribute('data-node1', node1.id);
+            line.setAttribute('data-node2', node2.id);
+            return line;
+        }
+
+        function saveState() {
+            return {
+                nodes: nodes.map(node => ({
+                    id: node.id,
+                    x: node.offsetLeft,
+                    y: node.offsetTop,
+                    text: node.innerText
+                })),
+                lines: lines.map(line => ({
+                    x1: line.getAttribute('x1'),
+                    y1: line.getAttribute('y1'),
+                    x2: line.getAttribute('x2'),
+                    y2: line.getAttribute('y2'),
+                    node1: line.getAttribute('data-node1'),
+                    node2: line.getAttribute('data-node2')
+                }))
+            };
+        }
+
+        function saveHistory() {
+            history.push(JSON.stringify(saveState()));
+            redoStack = [];
+        }
+
+        function restoreState(state) {
+            clearMindMap();
+            const savedState = JSON.parse(state);
+            savedState.nodes.forEach(nodeData => {
+                const node = createNode(nodeData.id, nodeData.x, nodeData.y);
+                node.innerText = nodeData.text;
+                document.getElementById('mindMapCanvas').appendChild(node);
+                nodes.push(node);
+            });
+            savedState.lines.forEach(lineData => {
+                const node1 = document.getElementById(lineData.node1);
+                const node2 = document.getElementById(lineData.node2);
+                const line = createLine(node1, node2);
+                document.getElementById('lines').appendChild(line);
+                lines.push(line);
+            });
+        }
+
+        let draggedNode = null;
+
+        function startDrag(event) {
+            draggedNode = event.target;
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('mouseup', endDrag);
+        }
+
+        function drag(event) {
+            if (draggedNode) {
+                const canvas = document.getElementById('mindMapCanvas');
+                const rect = canvas.getBoundingClientRect();
+                draggedNode.style.left = Math.min(Math.max(0, event.clientX - rect.left - draggedNode.offsetWidth / 2), rect.width - draggedNode.offsetWidth) + 'px';
+                draggedNode.style.top = Math.min(Math.max(0, event.clientY - rect.top - draggedNode.offsetHeight / 2), rect.height - draggedNode.offsetHeight) + 'px';
+                updateLines(draggedNode);
+            }
+        }
+
+        function endDrag() {
+            document.removeEventListener('mousemove', drag);
+            document.removeEventListener('mouseup', endDrag);
+            draggedNode = null;
+            saveHistory();
+        }
+
+        function updateLines(node) {
+            lines.forEach(line => {
+                if (line.getAttribute('data-node1') === node.id || line.getAttribute('data-node2') === node.id) {
+                    const node1 = document.getElementById(line.getAttribute('data-node1'));
+                    const node2 = document.getElementById(line.getAttribute('data-node2'));
+                    line.setAttribute('x1', node1.offsetLeft + node1.offsetWidth / 2);
+                    line.setAttribute('y1', node1.offsetTop + node1.offsetHeight / 2);
+                    line.setAttribute('x2', node2.offsetLeft + node2.offsetWidth / 2);
+                    line.setAttribute('y2', node2.offsetTop + node2.offsetHeight / 2);
+                }
+            });
+        }
+
+        function selectNode(event) {
+            const node = event.target;
+            if (node.classList.contains('selected')) {
+                node.classList.remove('selected');
+                selectedNodes = selectedNodes.filter(n => n !== node);
+            } else {
+                if (selectedNodes.length < 2) {
+                    node.classList.add('selected');
+                    selectedNodes.push(node);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
